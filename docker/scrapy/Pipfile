@@ -1,0 +1,21 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+scrapyd = "*"
+scrapy = "*"
+scrapyd-client = {editable = true, git = "https://github.com/jeames00/scrapyd-client.git"}
+stem = "*"
+grpcio = "*"
+grpcio-tools = "*"
+sqlalchemy = "*"
+psycopg2-binary = "*"
+alembic = "*"
+pymemcache = "*"
+
+[requires]
+python_version = "3.8"

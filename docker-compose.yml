@@ -1,0 +1,131 @@
+version: "3.8" 
+
+services:
+
+  secrets:
+    container_name: secrets
+    build:
+      context: .
+      dockerfile: docker/secrets/Dockerfile
+    entrypoint: /docker-entrypoint.sh
+    volumes:
+      - type: volume
+        source: secrets
+        target: /secrets
+        volume:
+          nocopy: true
+      - type: volume
+        source: nginx-secrets
+        target: /nginx-secrets
+        volume:
+          nocopy: true
+
+  http:
+    container_name: http
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+    build:
+      context: .
+      dockerfile: docker/http/Dockerfile
+    command: http-fetcher
+    env_file:
+      - env
+    networks:
+      - app-backend
+    
+  tor:
+    container_name: tor
+    hostname: tor
+    build:
+      context: .
+      dockerfile: docker/tor/Dockerfile
+    entrypoint: /docker-entrypoint.sh
+    depends_on: 
+      - secrets
+    env_file:
+      - env
+    networks:
+      - app-backend
+    volumes:
+      - type: volume
+        source: secrets
+        target: /secrets
+        volume:
+          nocopy: true
+
+  scrapy:
+    container_name: scrapy
+    hostname: scrapy
+    build:
+      context: .
+      dockerfile: docker/scrapy/Dockerfile
+    entrypoint: /docker-entrypoint.sh
+    depends_on:
+      - secrets
+      - database
+    env_file:
+      - env
+    networks:
+      - app-frontend
+      - app-backend
+    volumes:
+      - type: volume
+        source: secrets
+        target: /secrets
+        volume:
+          nocopy: true
+    
+  database:
+    container_name: database
+    depends_on:
+      - secrets
+    build:
+      context: .
+      dockerfile: docker/database/Dockerfile
+    environment:
+      POSTGRES_PASSWORD_FILE: "/secrets/POSTGRES_PASSWORD"
+    env_file:
+      - env
+    networks:
+      - app-backend
+    volumes:
+      - type: volume
+        source: secrets
+        target: /secrets
+        volume:
+          nocopy: true
+
+  nginx:
+    container_name: nginx
+    depends_on:
+      - secrets
+      - scrapy
+    build:
+      context: .
+      dockerfile: docker/nginx/Dockerfile
+    entrypoint: /docker-entrypoint.sh
+    command: nginx
+    env_file:
+      - env
+    networks:
+      - app-frontend
+    ports:
+      - "${SCRAPYD_PORT}:6801"
+    volumes:
+      - type: volume
+        source: nginx-secrets
+        target: /secrets
+        volume:
+          nocopy: true
+
+volumes:
+  secrets:
+  nginx-secrets:
+
+networks:
+  app-frontend:
+    driver: bridge
+  app-backend:
+    driver: bridge

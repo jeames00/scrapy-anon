@@ -1,0 +1,90 @@
+{
+	"headers": {
+		"Accept": [
+			"text/html, application/xhtml+xml, */*"
+		],
+		"Accept-Encoding": [
+			"gzip, deflate"
+		],
+		"Accept-Language": [
+			"en-US"
+		],
+		"Connection": [
+			"Keep-Alive"
+		],
+		"User-Agent": [
+			"Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; rv:11.0) like Gecko"
+		]
+	},
+	"handshake_version": 771,
+	"cipher_suites": [
+		49192,
+		159,
+		158,
+		157,
+		156,
+		49195,
+		49187,
+		49191,
+		49172,
+		49171,
+		61,
+		60,
+		53,
+		47,
+		49196,
+		49188,
+		49162,
+		49161,
+		106,
+		64,
+		56,
+		50,
+		10,
+		19
+	],
+	"compression_methods": [
+		0
+	],
+	"extensions": [
+		0,
+		5,
+		10,
+		11,
+		13,
+		35,
+		16,
+		13172,
+		23,
+		65281
+	],
+	"supported_groups": [
+		23,
+		24
+	],
+	"supported_points": [
+		0
+	],
+	"alpns": [
+		"spdy/3",
+		"http/1.1"
+	],
+	"ocsp": true,
+	"supported_versions": null,
+	"signature_algorithms": [
+		1537,
+		1539,
+		1025,
+		1281,
+		513,
+		1027,
+		1283,
+		515,
+		514
+	],
+	"psk_key_exchange_modes": [],
+	"key_share_entries": null,
+	"compress_certificate": null,
+	"record_size_limit": 0,
+	"unrecognised_extensions": "map[23:[] 35:[] 13172:[]]"
+}

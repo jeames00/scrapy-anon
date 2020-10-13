@@ -1,0 +1,114 @@
+{
+	"headers": {
+		"Accept": [
+			"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8"
+		],
+		"Accept-Encoding": [
+			"gzip, deflate, br"
+		],
+		"Accept-Language": [
+			"en-US,en;q=0.9"
+		],
+		"Sec-Fetch-Mode": [
+			"navigate"
+		],
+		"Sec-Fetch-Site": [
+			"none"
+		],
+		"Sec-Fetch-User": [
+			"?1"
+		],
+		"Upgrade-Insecure-Requests": [
+			"1"
+		],
+		"User-Agent": [
+			"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36 OPR/63.0.3368.35"
+		]
+	},
+	"handshake_version": 771,
+	"cipher_suites": [
+		64250,
+		4865,
+		4866,
+		4867,
+		49195,
+		49199,
+		49196,
+		49200,
+		52393,
+		52392,
+		49171,
+		49172,
+		156,
+		157,
+		47,
+		53,
+		10
+	],
+	"compression_methods": [
+		0
+	],
+	"extensions": [
+		14906,
+		0,
+		23,
+		65281,
+		10,
+		11,
+		35,
+		16,
+		5,
+		13,
+		18,
+		51,
+		45,
+		43,
+		27,
+		10794,
+		21
+	],
+	"supported_groups": [
+		6682,
+		29,
+		23,
+		24
+	],
+	"supported_points": [
+		0
+	],
+	"alpns": [
+		"h2",
+		"http/1.1"
+	],
+	"ocsp": true,
+	"supported_versions": [
+		39578,
+		772,
+		771,
+		770,
+		769
+	],
+	"signature_algorithms": [
+		1027,
+		2052,
+		1025,
+		1283,
+		2053,
+		1281,
+		2054,
+		1537,
+		513
+	],
+	"psk_key_exchange_modes": [
+		1
+	],
+	"key_share_entries": [
+		6682,
+		29
+	],
+	"compress_certificate": [
+		2
+	],
+	"record_size_limit": 0,
+	"unrecognised_extensions": "map[18:[] 21:[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0] 23:[] 35:[] 10794:[0] 14906:[]]"
+}

@@ -1,0 +1,11 @@
+version: "3.8"
+
+services:
+
+  scrapy:
+    volumes:
+      - type: bind
+        source: ..
+        target: /src
+    environment: 
+      DEVELOPMENT: "true"

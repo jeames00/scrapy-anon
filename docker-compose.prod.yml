@@ -1,0 +1,33 @@
+version: "3.8"
+
+services:
+
+  staging:
+    container_name: staging
+    build:
+      context: ..
+      dockerfile: scrapy-anon/docker/staging/Dockerfile
+      args:
+        SCRAPY_PROJECT: "${SCRAPY_PROJECT}"
+    command: cp -rf /root/$SCRAPY_PROJECT /scrapy-project/
+    volumes:
+      - type: volume
+        source: scrapy-project
+        target: /scrapy-project
+        volume:
+          nocopy: true
+
+  scrapy:
+    depends_on:
+      - staging
+    volumes:
+      - type: volume
+        source: scrapy-project
+        target: /scrapy-project
+        volume:
+          nocopy: true
+    environment: 
+      PRODUCTION: "true"
+
+volumes:
+  scrapy-project:

@@ -1,0 +1,18 @@
+#!/bin/bash
+
+mkdir -p ~/scrapy-project
+
+# If development, copy scrapy project directory from local bind mount
+if [[ $DEVELOPMENT && -d /src/$SCRAPY_PROJECT ]]; then
+	cp -rf /src/$SCRAPY_PROJECT ~/scrapy-project/
+fi
+
+# If production, copy scrapy project directory from docker volume
+if [[ $PRODUCTION && -d /scrapy-project/$SCRAPY_PROJECT ]]; then
+	cp -rf /scrapy-project/$SCRAPY_PROJECT ~/scrapy-project/
+fi
+
+# Symlink scrapy-anon modules, copy to new directory and deploy
+mkdir -p ~/scrapy-project/deploy
+cp -rfL ~/scrapy-project/$SCRAPY_PROJECT ~/scrapy-project/deploy/
+cd ~/scrapy-project/deploy/$SCRAPY_PROJECT && pipenv run scrapyd-deploy

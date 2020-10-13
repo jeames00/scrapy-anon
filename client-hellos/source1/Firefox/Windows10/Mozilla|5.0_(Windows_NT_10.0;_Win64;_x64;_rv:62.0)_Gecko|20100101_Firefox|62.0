@@ -1,0 +1,107 @@
+{
+	"headers": {
+		"Accept": [
+			"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+		],
+		"Accept-Encoding": [
+			"gzip, deflate, br"
+		],
+		"Accept-Language": [
+			"en-US,en;q=0.5"
+		],
+		"Te": [
+			"trailers"
+		],
+		"Upgrade-Insecure-Requests": [
+			"1"
+		],
+		"User-Agent": [
+			"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:62.0) Gecko/20100101 Firefox/62.0"
+		]
+	},
+	"handshake_version": 771,
+	"cipher_suites": [
+		4865,
+		4867,
+		4866,
+		49195,
+		49199,
+		52393,
+		52392,
+		49196,
+		49200,
+		49162,
+		49161,
+		49171,
+		49172,
+		51,
+		57,
+		47,
+		53,
+		10
+	],
+	"compression_methods": [
+		0
+	],
+	"extensions": [
+		0,
+		23,
+		65281,
+		10,
+		11,
+		35,
+		16,
+		5,
+		51,
+		43,
+		13,
+		45,
+		28,
+		21
+	],
+	"supported_groups": [
+		29,
+		23,
+		24,
+		25,
+		256,
+		257
+	],
+	"supported_points": [
+		0
+	],
+	"alpns": [
+		"h2",
+		"http/1.1"
+	],
+	"ocsp": true,
+	"supported_versions": [
+		32540,
+		771,
+		770,
+		769
+	],
+	"signature_algorithms": [
+		1027,
+		1283,
+		1539,
+		2052,
+		2053,
+		2054,
+		1025,
+		1281,
+		1537,
+		515,
+		513
+	],
+	"psk_key_exchange_modes": [
+		1
+	],
+	"key_share_entries": [
+		29,
+		23
+	],
+	"compress_certificate": null,
+	"record_size_limit": 16385,
+	"unrecognised_extensions": "map[21:[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0] 23:[] 35:[]]"
+}

@@ -1,0 +1,37 @@
+/#SPIDER_MIDDLEWARES/ {
+	s/^#//;
+ 	n;
+ 	/^#/ {
+        	s/^#//;
+         	n;
+         	/^#/ {
+                	s/^#//;
+         	}
+ 	}
+}
+
+/#DOWNLOADER_MIDDLEWARES/ {
+	s/^#//;
+ 	n;
+ 	/^#/ {
+        	s/^#/    'ScrapyAnon.middlewares.ScrapyanonDownloaderMiddleware': 500,\
+/;
+         	n;
+         	/^#/ {
+                	s/^#//;
+         	}
+ 	}
+}
+
+/#ITEM_PIPELINES/ {
+	s/^#//;
+ 	n;
+ 	/^#/ {
+        	s/^#/    'ScrapyAnon.pipelines.ScrapyanonPipeline': 500,\
+/;
+         	n;
+         	/^#/ {
+                	s/^#//;
+         	}
+ 	}
+}

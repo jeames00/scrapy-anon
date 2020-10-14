@@ -37,7 +37,7 @@ class StubSpider(scrapy.Spider):
         for k in headers:
             headers[k] = headers[k][0]
 
-        for url in self.urls:
+        for i, url in enumerate(self.urls):
             yield scrapy.Request(
                 url=url,
                 callback=self.parse,

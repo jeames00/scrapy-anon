@@ -1,4 +1,4 @@
-import scrapy, json
+import scrapy, json, re
 from scrapy.spidermiddlewares.httperror import HttpError
 from scrapy.loader import ItemLoader
 from itemloaders.processors import TakeFirst

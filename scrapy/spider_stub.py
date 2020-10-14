@@ -17,7 +17,7 @@ class StubSpider(scrapy.Spider):
         self.pc = ProxyController()
         self.proxies = self.pc.get_proxies(
             len(self.urls), 
-            spider=QuotesSpider.name
+            spider=<**CLASS NAME**>.name
         )
         self.domain_name = "**DOMAIN NAME**"
         self.host_name = "**HOST NAME**"

@@ -54,6 +54,11 @@ class StubSpider(scrapy.Spider):
             )
 
     def parse(self, response):
+        if b'Alt-Svc' in response.headers:
+            s = response.headers[b'Alt-Svc'].decode("utf-8")
+            m = re.match(r'h2="([^:]*)', s)
+            self.domain_name = m.groups()[0]
+
         l = ItemLoader(item = TorExitBlocked(), response = response)
     #   custom code to check if request was denied by server
     #   if xxxxx:

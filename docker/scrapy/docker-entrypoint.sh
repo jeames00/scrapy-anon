@@ -18,8 +18,8 @@ if [[ $DEVELOPMENT && ! -d /src/$SCRAPY_PROJECT ]]; then
 	cd $SCRAPY_PROJECT
 	sed -f /sedscript $SCRAPY_PROJECT/settings.py | sponge $SCRAPY_PROJECT/settings.py conv=notrunc
 	echo -n $SCRAPYD_PORT | xargs -I '{}' sed '/#url/{s/^#//; /localhost:6800/ {s/6800/{}/;}}' scrapy.cfg | sponge scrapy.cfg
-	ln -s /ScrapyAnon ScrapyAnon
-	ln -s /ScrapyAnon/spider_stub.py $SCRAPY_PROJECT/spiders
+	ln -s ../scrapy-anon/scrapy ScrapyAnon
+	ln -s ../../../scrapy-anon/scrapy/spider_stub.py $SCRAPY_PROJECT/spiders
 fi
 
 cd /db

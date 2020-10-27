@@ -16,6 +16,7 @@ sqlalchemy = "*"
 psycopg2-binary = "*"
 alembic = "*"
 pymemcache = "*"
+brotli = "*"
 
 [requires]
 python_version = "3.8"

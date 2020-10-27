@@ -22,7 +22,7 @@ if [[ $DEVELOPMENT && ! -d /src/$SCRAPY_PROJECT ]]; then
 	ln -s ../../../scrapy-anon/scrapy/spider_stub.py $SCRAPY_PROJECT/spiders
 fi
 
-cd /db
+cd /import/scrapyanon/db
 # Try to upgrade db with latest version
 # If this fails it's becase there's no previous version in db to upgrade
 if [[ ! `pipenv run alembic upgrade head` ]]; then

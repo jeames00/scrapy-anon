@@ -1,11 +1,19 @@
-import socket
+import socket, os, logging, grpc, subprocess
 
 from concurrent import futures
 import stem.process
-import os, logging, grpc, launchtor_pb2, launchtor_pb2_grpc
 
-hashed_tor_ctrl_pwd = os.environ["HASHED_TOR_CONTROL_PASSWORD"]
+import launchtor_pb2, launchtor_pb2_grpc
+import scrapyanon.secrets as secrets
+
+hashed_tor_ctrl_pwd = subprocess.run(
+    ["tor", "--hash-password", secrets.TOR_CONTROL_PASSWORD],
+    encoding='utf-8',
+    capture_output=True
+).stdout
+#hashed_tor_ctrl_pwd = os.environ["HASHED_TOR_CONTROL_PASSWORD"]
 tor_grpc_port = os.environ["TOR_GRPC_PORT"]
+
 
 class TorRequester(launchtor_pb2_grpc.TorRequesterServicer):
 
@@ -14,10 +22,10 @@ class TorRequester(launchtor_pb2_grpc.TorRequesterServicer):
             tor_process = stem.process.launch_tor_with_config(
                 config = {
                     'ControlPort': '0.0.0.0:'+str(request.controlPort),
-                    'SOCKSPort': socket.gethostbyname('tor')+':'+str(request.socksPort),
+                    'SOCKSPort': '0.0.0.0:'+str(request.socksPort),
                     'DataDirectory': '/home/tor/.tor/custom_socks_'+str(request.socksPort),
                     'HashedControlPassword': hashed_tor_ctrl_pwd,
-                    'HTTPTunnelPort': socket.gethostbyname('tor')+':auto',
+                    'HTTPTunnelPort': '0.0.0.0:auto',
                     'Log': [
                         'NOTICE stdout',
                         'ERR file /home/tor/tor_error_log_'+str(request.socksPort),

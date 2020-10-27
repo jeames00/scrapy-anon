@@ -93,7 +93,15 @@ func addrForDial(url *url.URL) (string, error) {
 
 // Analogous to tls.Dial. Connect to the given address and initiate a TLS
 // handshake using the given ClientHelloID, returning the resulting connection.
-func dialUTLS(network, addr string, cfg *utls.Config, clientHello string, forward proxy.Dialer) (*utls.UConn, error) {
+func dialUTLS(network, addr string, altsvc *string, cfg *utls.Config, clientHello string, forward proxy.Dialer) (*utls.UConn, error) {
+
+	serverName, _, err := net.SplitHostPort(addr)
+
+	if *altsvc != "" {
+		log.Printf("*** In dialUTLS, altsvc is: %s\n", *altsvc)
+		addr = *altsvc + ":443"
+	}
+
 	log.Printf("** dialling through proxy to: %s", addr)
 	conn, err := forward.Dial(network, addr)
 	if err != nil {
@@ -102,7 +110,6 @@ func dialUTLS(network, addr string, cfg *utls.Config, clientHello string, forwar
 
 	uconn := utls.UClient(conn, cfg, utls.HelloCustom)
 
-	serverName, _, err := net.SplitHostPort(addr)
 	if cfg == nil || cfg.ServerName == "" {
 		if err != nil {
 			return nil, err
@@ -131,6 +138,7 @@ type UTLSRoundTripper struct {
 	sync.Mutex
 
 	clientHello string
+	altsvc      *string
 	config      *utls.Config
 	proxyDialer proxy.Dialer
 	rt          http.RoundTripper
@@ -156,7 +164,7 @@ func (rt *UTLSRoundTripper) RoundTrip(req *http.Request) (*http.Response, error)
 		// On the first call, make an http.Transport or http2.Transport
 		// as appropriate.
 		var err error
-		rt.rt, err = makeRoundTripper(req.URL, rt.clientHello, rt.config, rt.proxyDialer)
+		rt.rt, err = makeRoundTripper(req.URL, rt.clientHello, rt.altsvc, rt.config, rt.proxyDialer)
 		if err != nil {
 			return nil, err
 		}
@@ -202,7 +210,7 @@ func makeProxyDialer(proxyURL *url.URL) (proxy.Dialer, error) {
 	return proxyDialer, err
 }
 
-func makeRoundTripper(url *url.URL, clientHello string, cfg *utls.Config, proxyDialer proxy.Dialer) (http.RoundTripper, error) {
+func makeRoundTripper(url *url.URL, clientHello string, altsvc *string, cfg *utls.Config, proxyDialer proxy.Dialer) (http.RoundTripper, error) {
 	addr, err := addrForDial(url)
 	if err != nil {
 		return nil, err
@@ -212,7 +220,7 @@ func makeRoundTripper(url *url.URL, clientHello string, cfg *utls.Config, proxyD
 	// initiate a TLS handshake using the given ClientHelloID. Return the
 	// resulting connection.
 	dial := func(network, addr string) (*utls.UConn, error) {
-		return dialUTLS(network, addr, cfg, clientHello, proxyDialer)
+		return dialUTLS(network, addr, altsvc, cfg, clientHello, proxyDialer)
 	}
 
 	bootstrapConn, err := dial("tcp", addr)
@@ -296,13 +304,21 @@ var clientHelloIDMap = map[string]*utls.ClientHelloID{
 	"helloios_11_1":         &utls.HelloIOS_11_1,
 }
 
-func NewUTLSRoundTripper(clientHello string, cfg *utls.Config, proxyURL *url.URL) (http.RoundTripper, error) {
+func NewUTLSRoundTripper(clientHello string, altsvc *string, cfg *utls.Config, proxyURL *url.URL) (http.RoundTripper, error) {
 	if clientHello == "" {
 		// Special case for "none" and HelloGolang.
 		return httpRoundTripper, nil
 	}
 
-	proxyDialer, err := makeProxyDialer(proxyURL)
+	// If connecting to an onion Alt-Svc, connect to standard Tor process
+	// (Tor manages this better when allowing it to build the circuit)
+	var newProxyURL *url.URL = proxyURL
+	if *altsvc != "" {
+		proxyString := "socks5://tor:9050"
+		newProxyURL, _ = url.Parse(proxyString)
+	}
+
+	proxyDialer, err := makeProxyDialer(newProxyURL)
 	if err != nil {
 		return nil, err
 	}
@@ -315,6 +331,7 @@ func NewUTLSRoundTripper(clientHello string, cfg *utls.Config, proxyURL *url.URL
 
 	return &UTLSRoundTripper{
 		clientHello: clientHello,
+		altsvc:      altsvc,
 		config:      cfg,
 		proxyDialer: proxyDialer,
 		// rt will be set in the first call to RoundTrip.

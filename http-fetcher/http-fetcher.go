@@ -13,6 +13,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"strings"
 )
 
 var httpRoundTripper *http.Transport = http.DefaultTransport.(*http.Transport)
@@ -60,13 +61,19 @@ func (s *Server) GetURL(ctx context.Context, request *pb.Request) (*pb.Response,
 		return &pb.Response{Error: "gRPC server error: couldn't format HTTP GET request"}, nil
 	}
 
+	var altsvc string
 	for k, v := range request.Headers {
+		if k == "Alt-Svc" {
+			altsvc = v
+			continue
+		}
+		log.Printf("%s, %s\n", k, v)
 		req.Header.Add(k, v)
 	}
 
 	httpRoundTripper.Proxy = http.ProxyURL(proxyURI)
 
-	rt, err := NewUTLSRoundTripper(request.ClientHello, nil, proxyURI)
+	rt, err := NewUTLSRoundTripper(request.ClientHello, &altsvc, nil, proxyURI)
 	resp, err := rt.RoundTrip(req)
 	if err != nil {
 		log.Print(err)
@@ -113,16 +120,17 @@ func (s *Server) GetURL(ctx context.Context, request *pb.Request) (*pb.Response,
 	}
 	body := responseData
 
-	var headers = make(map[string]string)
+	var responseHeaders = make(map[string]string)
 	for key, val := range resp.Header {
-		headers[key] = val[0]
+		a := strings.Join(val, " ")
+		responseHeaders[key] = a
 	}
 
 	resp.Body.Close()
 
 	return &pb.Response{
 		Status:  resp.Status,
-		Headers: headers,
+		Headers: responseHeaders,
 		Body:    body,
 		Error:   ""}, nil
 }

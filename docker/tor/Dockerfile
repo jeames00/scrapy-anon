@@ -10,16 +10,22 @@ COPY ./docker/tor/Pipfile* /
 COPY ./docker/export-secrets.sh /
 
 RUN useradd -m tor
-
 RUN cat /export-secrets.sh >> /home/tor/.profile
-RUN cat /export-secrets.sh >> /home/tor/.bashrc
+
+COPY import /import/scrapyanon/
+
+RUN mkdir /grpcimport
+RUN chown -R tor:tor /grpcimport
+
+RUN echo PYTHONPATH=/import:/grpcimport > /.env
 
 COPY ./docker/tor/launch-tor.py /home/tor
 RUN chmod +x /home/tor/launch-tor.py
 
-USER tor
+# Allow basic Tor connections on port 9050
+RUN echo SocksPort 0.0.0.0:9050 >> /etc/tor/torrc
 
+
+USER tor
 RUN pipenv install --ignore-pipfile
-COPY ./protobuf/launchtor.proto /home/tor
-WORKDIR /home/tor
-RUN pipenv run python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. ./launchtor.proto
+RUN pipenv run python -m grpc_tools.protoc -Iimport/scrapyanon/protobuf --python_out=grpcimport --grpc_python_out=grpcimport launchtor.proto

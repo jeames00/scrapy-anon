@@ -3,10 +3,10 @@ import sys, os, logging
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 
-from db_config import DATABASE_URI
-from models import Base, ClientHello
-from crud import upsert, session_scope as db_session
-from DatabaseController import DatabaseController
+from scrapyanon.db.db_config import DATABASE_URI
+from scrapyanon.db.models import Base, ClientHello
+from scrapyanon.db.crud import upsert, session_scope as db_session
+from scrapyanon.controllers.DatabaseController import DatabaseController
 
 engine = create_engine(DATABASE_URI)
 Session = sessionmaker(bind=engine)

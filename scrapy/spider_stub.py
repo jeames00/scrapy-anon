@@ -1,8 +1,11 @@
 import scrapy, json, re
+
 from scrapy.spidermiddlewares.httperror import HttpError
 from scrapy.loader import ItemLoader
 from itemloaders.processors import TakeFirst
 from scrapy.exceptions import NotConfigured
+
+from scrapyanon.controllers.ProxyController import ProxyController
 
 class TorExitBlocked(scrapy.Item):
     ip_blocked = scrapy.Field(output_processor=TakeFirst())
@@ -17,7 +20,7 @@ class StubSpider(scrapy.Spider):
         self.pc = ProxyController()
         self.proxies = self.pc.get_proxies(
             len(self.urls), 
-            spider=<**CLASS NAME**>.name
+            spider=CLASS_NAME.name
         )
         self.domain_name = "**DOMAIN NAME**"
         self.host_name = "**HOST NAME**"

@@ -6,7 +6,7 @@
 # See: https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 import logging
 
-from DatabaseController import DatabaseController
+from scrapyanon.controllers.DatabaseController import DatabaseController
 
 class ScrapyanonPipeline(object):
 

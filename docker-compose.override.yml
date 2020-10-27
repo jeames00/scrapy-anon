@@ -5,6 +5,9 @@ services:
   scrapy:
     volumes:
       - type: bind
+        source: ./import
+        target: /import/scrapyanon
+      - type: bind
         source: ..
         target: /src
     environment: 

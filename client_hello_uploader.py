@@ -1,12 +1,12 @@
 #from contextlib import contextmanager
+import sys, os
+
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
-from db_config import DATABASE_URI
-from models import Base, ClientHello
-from crud import session_scope as db_session
-from crud import upsert
-import sys
-import os
+
+from scrapyanon.db.db_config import DATABASE_URI
+from scrapyanon.db.models import Base, ClientHello
+from scrapyanon.db.crud import upsert, session_scope as db_session
 
 engine = create_engine(DATABASE_URI)
 Session = sessionmaker(bind=engine)

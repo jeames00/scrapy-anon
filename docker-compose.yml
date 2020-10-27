@@ -32,6 +32,8 @@ services:
     command: http-fetcher
     env_file:
       - .env
+    environment:
+      TZ: "Australia/Sydney"
     networks:
       - app-backend
     
@@ -44,6 +46,8 @@ services:
     entrypoint: /docker-entrypoint.sh
     depends_on: 
       - secrets
+    environment:
+      TZ: "Australia/Sydney"
     env_file:
       - .env
     networks:
@@ -67,6 +71,8 @@ services:
       - database
     env_file:
       - .env
+    environment:
+      TZ: "Australia/Sydney"
     networks:
       - app-frontend
       - app-backend
@@ -86,6 +92,7 @@ services:
       dockerfile: docker/database/Dockerfile
     environment:
       POSTGRES_PASSWORD_FILE: "/secrets/POSTGRES_PASSWORD"
+      TZ: "Australia/Sydney"
     env_file:
       - .env
     networks:
@@ -109,6 +116,8 @@ services:
     command: nginx
     env_file:
       - .env
+    environment:
+      TZ: "Australia/Sydney"
     networks:
       - app-frontend
     ports:

@@ -98,7 +98,6 @@ func dialUTLS(network, addr string, altsvc *string, cfg *utls.Config, clientHell
 	serverName, _, err := net.SplitHostPort(addr)
 
 	if *altsvc != "" {
-		log.Printf("*** In dialUTLS, altsvc is: %s\n", *altsvc)
 		addr = *altsvc + ":443"
 	}
 
@@ -310,15 +309,7 @@ func NewUTLSRoundTripper(clientHello string, altsvc *string, cfg *utls.Config, p
 		return httpRoundTripper, nil
 	}
 
-	// If connecting to an onion Alt-Svc, connect to standard Tor process
-	// (Tor manages this better when allowing it to build the circuit)
-	var newProxyURL *url.URL = proxyURL
-	if *altsvc != "" {
-		proxyString := "socks5://tor:9050"
-		newProxyURL, _ = url.Parse(proxyString)
-	}
-
-	proxyDialer, err := makeProxyDialer(newProxyURL)
+	proxyDialer, err := makeProxyDialer(proxyURL)
 	if err != nil {
 		return nil, err
 	}

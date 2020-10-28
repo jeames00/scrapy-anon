@@ -26,17 +26,18 @@ if [[ $DEVELOPMENT && ! -d /src/$SCRAPY_PROJECT ]]; then
 fi
 
 cd /import/scrapyanon/db
+pipenv run alembic upgrade head
 # Try to upgrade db with latest version
 # If this fails it's becase there's no previous version in db to upgrade
-if [[ ! `pipenv run alembic upgrade head` ]]; then
-	echo "alembic upgrade head failed, stamping database with HEAD..."
-	# Stamp db with latest version (i.e. to make a previous version)
-	pipenv run alembic stamp head
-	# Generate a new version (schema probably identical to previous)
-	pipenv run alembic revision --autogenerate -m "initial setup"
-	# Upgrade version in db
-	pipenv run alembic upgrade head
-fi
+#if [[ ! `pipenv run alembic upgrade head` ]]; then
+#	echo "alembic upgrade head failed, stamping database with HEAD..."
+#	# Stamp db with latest version (i.e. to make a previous version)
+#	pipenv run alembic stamp head
+#	# Generate a new version (schema probably identical to previous)
+#	pipenv run alembic revision --autogenerate -m "initial setup"
+#	# Upgrade version in db
+#	pipenv run alembic upgrade head
+#fi
 
 
 # Upsert client-hellos into database

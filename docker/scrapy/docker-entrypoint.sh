@@ -2,7 +2,10 @@
 
 set -e
 
-source /home/scrapy/.profile
+pipenv run python -m grpc_tools.protoc -Iimport/scrapyanon/protobuf --python_out=grpcimport --grpc_python_out=grpcimport launchtor.proto
+pipenv run python -m grpc_tools.protoc -Iimport/scrapyanon/protobuf --python_out=grpcimport --grpc_python_out=grpcimport http.proto
+
+#source /home/scrapy/.profile
 
 # Scrapyd config port should match nominated custom port number (and bind listening address to '0.0.0.0'
 pip_env=`pipenv --venv`
@@ -44,5 +47,7 @@ cd
 memcached &
 sleep 5 && deploy &
 pipenv run scrapyd
+
+tail -f /dev/null
 
 exec "$@"

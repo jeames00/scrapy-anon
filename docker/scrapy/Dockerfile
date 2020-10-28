@@ -4,7 +4,6 @@ RUN pip install pipenv \
 	&& apt install -y --no-install-recommends gcc python3-dev libssl-dev git memcached
 COPY ./docker/scrapy/Pipfile* /
 COPY ./docker/scrapy/sponge /usr/bin/
-COPY import /import/scrapyanon/
 COPY scrapy /ScrapyAnon
 RUN echo PYTHONPATH=/import:/grpcimport > /.env
 COPY ./docker/scrapy/upload-client-hellos.py client-hellos /client-hellos/
@@ -26,5 +25,3 @@ RUN chmod +x /usr/local/bin/deploy
 USER scrapy
 
 RUN pipenv install --deploy --ignore-pipfile
-RUN pipenv run python -m grpc_tools.protoc -Iimport/scrapyanon/protobuf --python_out=grpcimport --grpc_python_out=grpcimport launchtor.proto
-RUN pipenv run python -m grpc_tools.protoc -Iimport/scrapyanon/protobuf --python_out=grpcimport --grpc_python_out=grpcimport http.proto

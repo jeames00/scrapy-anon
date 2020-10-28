@@ -22,22 +22,17 @@ var tlsCh = make(chan *utls.UConn)
 var browserClientHello string
 var grpc_port = os.Getenv("HTTP_GRPC_PORT")
 
-type HttpClient struct {
-	HttpClient *http.Client
-	TLSConn    *utls.UConn
-}
-
 type Server struct {
 	pb.UnimplementedHttpClientServer
-	httpClientMap map[string]*http.Client
+	roundTrippers map[string]http.RoundTripper
 }
 
 func main() {
 	grpcServer := grpc.NewServer()
-	var httpClientMap = make(map[string]*http.Client)
+	var roundTrippers = make(map[string]http.RoundTripper)
 
 	server := Server{
-		httpClientMap: httpClientMap,
+		roundTrippers: roundTrippers,
 	}
 
 	pb.RegisterHttpClientServer(grpcServer, &server)
@@ -53,8 +48,6 @@ func main() {
 
 func (s *Server) GetURL(ctx context.Context, request *pb.Request) (*pb.Response, error) {
 
-	proxyURI, _ := url.Parse(request.Proxy)
-
 	req, err := http.NewRequest("GET", request.Url, nil)
 	if err != nil {
 		log.Print(err)
@@ -65,16 +58,33 @@ func (s *Server) GetURL(ctx context.Context, request *pb.Request) (*pb.Response,
 	for k, v := range request.Headers {
 		if k == "Alt-Svc" {
 			altsvc = v
+			// If connecting to an onion Alt-Svc, connect to standard Tor
+			// process instead (Tor manages this better when allowing it
+			// to build the circuit)
+			request.Proxy = "socks5://tor:9050"
 			continue
 		}
 		log.Printf("%s, %s\n", k, v)
 		req.Header.Add(k, v)
 	}
 
+	proxyURI, _ := url.Parse(request.Proxy)
 	httpRoundTripper.Proxy = http.ProxyURL(proxyURI)
 
-	rt, err := NewUTLSRoundTripper(request.ClientHello, &altsvc, nil, proxyURI)
-	resp, err := rt.RoundTrip(req)
+	// Create a UTLSRoundTripper for each proxy connection,
+	// store it in a map for reuse on next request
+	if _, found := s.roundTrippers[request.Proxy]; !found {
+		rt, err := NewUTLSRoundTripper(
+			request.ClientHello, &altsvc, nil, proxyURI,
+		)
+		if err == nil {
+			s.roundTrippers[request.Proxy] = rt
+		} else {
+			return nil, err
+		}
+	}
+
+	resp, err := s.roundTrippers[request.Proxy].RoundTrip(req)
 	if err != nil {
 		log.Print(err)
 		fmt.Printf("%+v\n", err)

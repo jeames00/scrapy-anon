@@ -89,10 +89,7 @@ class ScrapyanonDownloaderMiddleware(object):
             self.http_host_port = os.environ['HTTP_GRPC_PORT']
             self.headers = kwargs["headers"]
             self.proxy = kwargs["proxy"]
-            self.hostName = kwargs["hostName"]
-            self.domainName = kwargs["domainName"]
             self.url = kwargs["url"]
-            self.spider = kwargs["spider"]
             self.clientHello = kwargs["clientHello"]
 
          #   channel = Channel(port = self.http2_server_port)
@@ -106,9 +103,6 @@ class ScrapyanonDownloaderMiddleware(object):
             
       #  reply: Response = await server_stub.GetURL(Request(
                     url=self.url,
-                    scrapySpider=self.spider,
-                    domainName=self.domainName,
-                    host=self.hostName,
                     proxy=self.proxy,
                     headers=self.headers,
                     clientHello=self.clientHello))
@@ -139,9 +133,6 @@ class ScrapyanonDownloaderMiddleware(object):
         kwargs = {
             'url':          request.url,
             'headers':      request.headers,
-            'spider':       spider.name,
-            'domainName':   request.meta['domain_name'],
-            'hostName':     request.meta['host_name'],
             'proxy':        request.meta['proxy'],
             'clientHello':  request.meta['client_hello']
         }

@@ -2,6 +2,8 @@
 
 set -e
 
+echo PYTHONPATH=$PYTHONPATH:${CUSTOM_PYTHONPATH} > /.env
+
 pipenv run python -m grpc_tools.protoc -Iimport/scrapyanon/protobuf --python_out=grpcimport --grpc_python_out=grpcimport launchtor.proto
 pipenv run python -m grpc_tools.protoc -Iimport/scrapyanon/protobuf --python_out=grpcimport --grpc_python_out=grpcimport http.proto
 
@@ -45,7 +47,7 @@ cd /client-hellos && pipenv run python upload-client-hellos.py
 
 cd
 
-memcached &
+memcached -u scrapy &
 sleep 5 && deploy &
 pipenv run scrapyd
 

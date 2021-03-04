@@ -5,7 +5,7 @@ RUN pip install pipenv \
 COPY ./docker/scrapy/Pipfile* /
 COPY ./docker/scrapy/sponge /usr/bin/
 COPY scrapy /ScrapyAnon
-RUN echo PYTHONPATH=/import:/grpcimport > /.env
+
 COPY ./docker/scrapy/upload-client-hellos.py client-hellos /client-hellos/
 RUN useradd -m scrapy
 #RUN chown -R scrapy:scrapy /import/scrapyanon/db
@@ -22,6 +22,6 @@ COPY ./docker/scrapy/sedscript /
 COPY ./docker/scrapy/deploy /usr/local/bin/
 RUN chmod +x /usr/local/bin/deploy
 
-USER scrapy
+#USER scrapy
 
 RUN pipenv install --deploy --ignore-pipfile

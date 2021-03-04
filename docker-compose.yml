@@ -73,6 +73,7 @@ services:
       - .env
     environment:
       TZ: "Australia/Sydney"
+      PYTHONPATH: /import:/grpcimport
     networks:
       - app-frontend
       - app-backend

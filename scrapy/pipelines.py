@@ -14,11 +14,12 @@ class ScrapyanonPipeline(object):
         self.db = DatabaseController()
 
     def process_item(self, item, spider):
-        self.db.update_proxy_blocked_status(
-            item['ip_address'],
-            item['ip_blocked'],
-            spider.client_hello,
-            spider.name
-        )
+        if 'ip_blocked' in item.keys():
+            self.db.update_proxy_blocked_status(
+                item['ip_address'],
+                item['ip_blocked'],
+                spider.client_hello,
+                spider.name
+            )
 
         return item

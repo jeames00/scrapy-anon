@@ -1,6 +1,6 @@
 FROM golang:1.15.2-alpine
 
-RUN apk update && apk add protoc git
+RUN apk update && apk add --no-cache --wait 10 protoc git
 RUN go get github.com/golang/protobuf/protoc-gen-go
 COPY http-fetcher /http-fetcher
 RUN mkdir /http-fetcher/pb

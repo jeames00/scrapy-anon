@@ -8,4 +8,4 @@ passwd = secrets.POSTGRES_PASSWORD
 db_port = os.environ["DATABASE_PORT"]
 
 DATABASE_URI =\
-'postgres+psycopg2://postgres:' + passwd + '@database:'+db_port+'/scrapyanon'
+'postgresql+psycopg2://postgres:' + passwd + '@database:'+db_port+'/scrapyanon'

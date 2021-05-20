@@ -5,7 +5,7 @@ import (
 	utls "github.com/refraction-networking/utls"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
-	"http-fetcher/pb"
+	pb "http-fetcher/pb"
 	"io"
 	"io/ioutil"
 	"log"

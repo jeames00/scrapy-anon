@@ -68,8 +68,13 @@ func (s *Server) GetURL(ctx context.Context, request *pb.Request) (*pb.Response,
 		req.Header.Add(k, v)
 	}
 
-	proxyURI, _ := url.Parse(request.Proxy)
-	httpRoundTripper.Proxy = http.ProxyURL(proxyURI)
+	var proxyURI *url.URL
+	if request.Proxy != "" {
+		proxyURI, _ = url.Parse(request.Proxy)
+		httpRoundTripper.Proxy = http.ProxyURL(proxyURI)
+	} else {
+		proxyURI = nil
+	}
 
 	// Create a UTLSRoundTripper for each proxy connection,
 	// store it in a map for reuse on next request

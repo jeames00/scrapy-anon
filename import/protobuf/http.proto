@@ -1,5 +1,5 @@
 syntax = "proto3";
-option go_package = "/http-fetcher";
+option go_package = "/http-fetcher;http_fetcher";
 
 package pb;
 

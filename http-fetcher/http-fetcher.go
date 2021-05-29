@@ -68,6 +68,7 @@ func (s *Server) GetURL(ctx context.Context, request *pb.Request) (*pb.Response,
 		req.Header.Add(k, v)
 	}
 
+	// pass a nil proxyURI if proxy string is empty
 	var proxyURI *url.URL
 	if request.Proxy != "" {
 		proxyURI, _ = url.Parse(request.Proxy)

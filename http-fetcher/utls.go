@@ -101,8 +101,15 @@ func dialUTLS(network, addr string, altsvc *string, cfg *utls.Config, clientHell
 		addr = *altsvc + ":443"
 	}
 
-	log.Printf("** dialling through proxy to: %s", addr)
-	conn, err := forward.Dial(network, addr)
+	// dial destination host directly if proxy dialer is nil
+	var conn net.Conn
+	if forward != nil {
+		log.Printf("** dialling through proxy to remote host: %s", addr)
+		conn, err = forward.Dial(network, addr)
+	} else {
+		log.Printf("** dialling directly to remote host: %s", addr)
+		conn, err = net.Dial(network, addr)
+	}
 	if err != nil {
 		return nil, err
 	}
@@ -309,9 +316,16 @@ func NewUTLSRoundTripper(clientHello string, altsvc *string, cfg *utls.Config, p
 		return httpRoundTripper, nil
 	}
 
-	proxyDialer, err := makeProxyDialer(proxyURL)
-	if err != nil {
-		return nil, err
+	// proxyDialer is nil if proxyURL is nil
+	var proxyDialer proxy.Dialer
+	if proxyURL != nil {
+		thisProxyDialer, err := makeProxyDialer(proxyURL)
+		if err != nil {
+			return nil, err
+		}
+		proxyDialer = thisProxyDialer
+	} else {
+		proxyDialer = nil
 	}
 
 	// This special-case RoundTripper is used for HTTP requests, which don't

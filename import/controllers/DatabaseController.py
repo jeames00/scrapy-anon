@@ -10,20 +10,32 @@ from scrapyanon.db.models import Base, ClientHello, Proxy, ClientHelloProxy
 
 class DatabaseController:
 
-    def get_client_hello(self, type = "random"):
+    def get_client_hello(self, type = "random", **kwargs):
         with db_session() as s:
-            if type == "random": 
-                _id = get_random_id(s, ClientHello)
+            try:
+                platform = kwargs['platform']
+                browser = kwargs['browser']
+                ch = s.query(ClientHello).\
+                    options(load_only('client_hello')).\
+                    filter(
+                            ClientHello.platform == platform,
+                            ClientHello.browser == browser
+                    )[6].client_hello
+            except:
+                if type == "random": 
+                    _id = get_random_id(s, ClientHello)
 
-                ch = s.query(ClientHello).\
-                    options(load_only('client_hello')).\
-                    filter(ClientHello.id == _id).\
-                    first().client_hello
-            elif type == "tor":
-                ch = s.query(ClientHello).\
-                    options(load_only('client_hello')).\
-                    filter(ClientHello.platform == "tor").\
-                    first().client_hello
+                    ch = s.query(ClientHello).\
+                        options(load_only('client_hello')).\
+                        filter(ClientHello.id == _id).\
+                        first().client_hello
+                elif type == "tor":
+                    ch = s.query(ClientHello).\
+                        options(load_only('client_hello')).\
+                        filter(ClientHello.platform == "tor").\
+                        first().client_hello
+                else:
+                    raise Exception
 
             return ch
 

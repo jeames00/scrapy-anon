@@ -2,7 +2,7 @@ FROM python:3.8-slim-buster
 RUN pip install pipenv \
 	&& apt update \
 	&& apt install -y --no-install-recommends gcc python3-dev libssl-dev git memcached
-COPY ./docker/scrapy/Pipfile* /
+COPY ./docker/scrapy/Pipfile /
 COPY ./docker/scrapy/sponge /usr/bin/
 COPY scrapy /ScrapyAnon
 

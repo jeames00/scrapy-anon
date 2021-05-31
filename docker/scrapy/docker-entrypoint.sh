@@ -49,7 +49,7 @@ cd
 
 memcached -u scrapy &
 sleep 5 && deploy &
-pipenv run scrapyd
+pipenv run scrapyd --pidfile /run/scrapyd.`cat /dev/urandom | tr -dc 'a-zA-Z0-9' | head -c 6`.pid
 
 tail -f /dev/null
 

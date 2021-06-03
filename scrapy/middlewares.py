@@ -5,7 +5,7 @@
 # See documentation in:
 # https://doc.scrapy.org/en/latest/topics/spider-middleware.html
 
-import os, logging, asyncio
+import os, logging, asyncio, sys
 
 import concurrent.futures
 from scrapy import signals
@@ -88,6 +88,8 @@ class ScrapyanonDownloaderMiddleware(object):
         async def fetching(kwargs):
             self.http_host_port = os.environ['HTTP_GRPC_PORT']
             self.headers = kwargs["headers"]
+            self.method = kwargs["method"]
+            self.body = kwargs["body"]
             self.proxy = kwargs["proxy"]
             self.url = kwargs["url"]
             self.clientHello = kwargs["clientHello"]
@@ -105,6 +107,8 @@ class ScrapyanonDownloaderMiddleware(object):
                     url=self.url,
                     proxy=self.proxy,
                     headers=self.headers,
+                    method=self.method,
+                    body=self.body,
                     clientHello=self.clientHello))
 
             await channel.close()
@@ -130,18 +134,45 @@ class ScrapyanonDownloaderMiddleware(object):
         # - or raise IgnoreRequest: process_exception() methods of
         #   installed downloader middleware will be called
 
-        kwargs = {
-            'url':          request.url,
-            'headers':      request.headers,
-            'proxy':        request.meta['proxy'],
-            'clientHello':  request.meta['client_hello']
+        # Proxy for http-fetcher is empty (i.e. nil) by default unless
+        # passed in request
+        http_fetcher_args = {
+            'url':  request.url,
+            'headers': request.headers
         }
 
+        # If client_hello isn't passed, exit the function to let scrapy
+        # process the request
+        try:
+            http_fetcher_args['clientHello'] = request.meta['client_hello']
+        except KeyError:
+            return None
 
-        if 'alt-svc' in request.meta:
-            kwargs['alt-svc'] = request.meta['alt-svc']
+        # Set the proxy for http-fetcher if it's passed in request
+        try:
+            http_fetcher_args['proxy'] = request.meta['proxy']
+        except KeyError:
+            http_fetcher_args['proxy'] = ""
 
-        response = yield threads.deferToThread(self.fetch_url, kwargs)
+        # Body to be passed to http_fetcher
+        try:
+            http_fetcher_args['body'] = request.body.decode("UTF-8")
+        except AttributeError:
+            pass
+
+        # Request method to be passed to http_fetcher
+        try:
+            http_fetcher_args['method'] = request.method
+        except AttributeError:
+            pass
+
+        # pass the 'alt-svc' host address if provided
+        try:
+            http_fetcher_args['alt-svc'] = request.meta['alt-svc']
+        except KeyError:
+            pass
+
+        response = yield threads.deferToThread(self.fetch_url, http_fetcher_args)
 
         if isinstance(response, tuple):
             return HtmlResponse(url = request.url,

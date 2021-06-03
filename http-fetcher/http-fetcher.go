@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	utls "github.com/refraction-networking/utls"
 	"golang.org/x/net/context"
@@ -47,11 +49,40 @@ func main() {
 }
 
 func (s *Server) GetURL(ctx context.Context, request *pb.Request) (*pb.Response, error) {
-
 	req, err := http.NewRequest("GET", request.Url, nil)
 	if err != nil {
 		log.Print(err)
 		return &pb.Response{Error: "gRPC server error: couldn't format HTTP GET request"}, nil
+	}
+
+	var reqData map[string]interface{}
+	data, _ := json.Marshal(request)
+	json.Unmarshal(data, &reqData)
+
+	if reqMethod, found := reqData["method"]; found {
+		if reqMethod, ok := reqMethod.(string); ok {
+			req.Method = reqMethod
+		} else {
+			log.Print(err)
+			return &pb.Response{Error: "gRPC server error: request method is not of type string"}, nil
+		}
+	}
+
+	if reqBody, found := reqData["body"]; found {
+		if reqBody, ok := reqBody.(string); ok {
+			// URL encode parameters if passed as a map
+			//	body := url.Values{}
+			//	for k, v := range reqBody {
+			//		body.Add(k, v)
+			//	}
+			//	urlEncodedBody := body.Encode()
+			req.Body = ioutil.NopCloser(
+				bytes.NewReader([]byte(reqBody)),
+			)
+		} else {
+			log.Print(err)
+			return &pb.Response{Error: "gRPC server error: request body is not of type map[string][]string"}, nil
+		}
 	}
 
 	var altsvc string

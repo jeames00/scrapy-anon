@@ -35,7 +35,7 @@ class Proxy(Base):
     ip_address = Column(String, nullable=False)
     tor_fingerprint = Column(String, nullable=True, unique=True)
     tor_nickname = Column(String, nullable=True)
-    is_tor_exit_node = Column(Boolean, nullable=False)
+    source = Column(String, nullable=False)
 
     __table_args__ = (UniqueConstraint(
         'ip_address',
@@ -57,7 +57,7 @@ class ClientHelloProxy(Base):
     updated = Column(Date, default=date_today)
 
     __table_args__ = (UniqueConstraint(
-        'website', 'proxy_id', name='website_proxy_constraint'), {})
+        'website', 'proxy_id', name='website_proxy_id_constraint'), {})
 
     # relationship to parents
     client_hello = relationship(

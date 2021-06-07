@@ -14,12 +14,24 @@ class ScrapyanonPipeline(object):
         self.db = DatabaseController()
 
     def process_item(self, item, spider):
-        if 'ip_blocked' in item.keys():
-            self.db.update_proxy_blocked_status(
-                item['ip_address'],
-                item['ip_blocked'],
-                spider.client_hello,
-                spider.name
-            )
+        self.db.upsert_rows(
+                rows = [{ 
+                    'website': item['website'],
+                    'blocked': item['ip_blocked']
+                }],
+                table_name = 'ClientHelloProxy',
+                constraint = 'website_proxy_id_constraint',
+                foreign_keys = [
+                    {'foreign_key': 'proxy_id',
+                    'parent_table': 'Proxy',
+                    'parent_column': 'ip_address',
+                    'column_value': item['ip_address']},
+
+                    {'foreign_key': 'client_hello_id',
+                    'parent_table': 'ClientHello',
+                    'parent_column': 'client_hello',
+                    'column_value': spider.client_hello}
+               ]
+        )
 
         return item

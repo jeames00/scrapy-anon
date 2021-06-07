@@ -95,7 +95,6 @@ func (s *Server) GetURL(ctx context.Context, request *pb.Request) (*pb.Response,
 			request.Proxy = "socks5://tor:9050"
 			continue
 		}
-		log.Printf("%s, %s\n", k, v)
 		req.Header.Add(k, v)
 	}
 

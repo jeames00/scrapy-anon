@@ -269,7 +269,8 @@ class TorConnector(Subject):
         try:
             new_circuit = self.controller.extend_circuit(
                 '0', 
-                path = None, #[entry_fingerprint, exit_fingerprint],
+                #path = [entry_fingerprint, exit_fingerprint],
+                path = None,
                 purpose = 'general',
                 await_build = False 
             )

@@ -124,13 +124,16 @@ func dialUTLS(network, addr string, altsvc *string, cfg *utls.Config, clientHell
 	}
 
 	spec := getClientHelloSpec(clientHello, serverName)
+
 	err = uconn.ApplyPreset(spec)
 	if err != nil {
+		log.Println("Error applying TLS clientHello spec")
 		return nil, err
 	}
 
 	err = uconn.Handshake()
 	if err != nil {
+		log.Println("Error establishing TLS handshake")
 		return nil, err
 	}
 	return uconn, nil

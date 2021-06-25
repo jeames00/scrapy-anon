@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	utls "github.com/refraction-networking/utls"
 	"log"
 	"math/rand"
@@ -46,7 +47,7 @@ func isGREASEPSKKeyExchangeMode(val uint8) bool {
 	return false
 }
 
-func buildClientHelloSpec(tlsea *TLSExtensionAttributes) *utls.ClientHelloSpec {
+func buildClientHelloSpec(tlsea *TLSExtensionAttributes) (*utls.ClientHelloSpec, error) {
 	chs := &utls.ClientHelloSpec{
 		CipherSuites:       nil,
 		CompressionMethods: nil,
@@ -164,16 +165,16 @@ func buildClientHelloSpec(tlsea *TLSExtensionAttributes) *utls.ClientHelloSpec {
 				if isGREASEvalue(extensionVal) {
 					chs.Extensions[i] = &utls.UtlsGREASEExtension{}
 				} else {
-					log.Fatalf("Error: tried to unmarshal unsupported TLS extension number %d", extensionVal)
+					return chs, fmt.Errorf("Tried to unmarshal unsupported TLS extension number %d", extensionVal)
 				}
 			}
 		}
 
 	}
-	return chs
+	return chs, nil
 }
 
-func getClientHelloSpec(clientHello, host string) *utls.ClientHelloSpec {
+func getClientHelloSpec(clientHello, host string) (*utls.ClientHelloSpec, error) {
 	var t TLSExtensionAttributes
 	serverHost = host
 
@@ -193,6 +194,6 @@ func getClientHelloSpec(clientHello, host string) *utls.ClientHelloSpec {
 
 	}
 
-	clientHelloSpec := buildClientHelloSpec(&t)
-	return clientHelloSpec
+	clientHelloSpec, err := buildClientHelloSpec(&t)
+	return clientHelloSpec, err
 }

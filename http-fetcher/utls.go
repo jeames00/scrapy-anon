@@ -123,7 +123,11 @@ func dialUTLS(network, addr string, altsvc *string, cfg *utls.Config, clientHell
 		uconn.SetSNI(serverName)
 	}
 
-	spec := getClientHelloSpec(clientHello, serverName)
+	spec, err := getClientHelloSpec(clientHello, serverName)
+	if err != nil {
+		log.Println("Error building client hello spec")
+		return nil, err
+	}
 
 	err = uconn.ApplyPreset(spec)
 	if err != nil {

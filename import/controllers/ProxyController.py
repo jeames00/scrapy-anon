@@ -5,7 +5,6 @@ from contextlib import contextmanager
 from pymemcache.client.base import Client
 from pymemcache import serde
 
-from scrapyanon.controllers.TorController import TorController
 from scrapyanon.controllers.DatabaseController import DatabaseController
 from scrapyanon.ObserveNotify import Observer, Subject
 

@@ -109,18 +109,18 @@ func (s *Server) GetURL(ctx context.Context, request *pb.Request) (*pb.Response,
 
 	// Create a UTLSRoundTripper for each proxy connection,
 	// store it in a map for reuse on next request
-	if _, found := s.roundTrippers[request.Proxy]; !found {
+	if _, found := s.roundTrippers[request.HttpClientID]; !found {
 		rt, err := NewUTLSRoundTripper(
 			request.ClientHello, &altsvc, nil, proxyURI,
 		)
 		if err == nil {
-			s.roundTrippers[request.Proxy] = rt
+			s.roundTrippers[request.HttpClientID] = rt
 		} else {
 			return nil, err
 		}
 	}
 
-	resp, err := s.roundTrippers[request.Proxy].RoundTrip(req)
+	resp, err := s.roundTrippers[request.HttpClientID].RoundTrip(req)
 	if err != nil {
 		log.Print(err)
 		fmt.Printf("%+v\n", err)

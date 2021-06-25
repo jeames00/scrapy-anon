@@ -93,23 +93,20 @@ class ScrapyanonDownloaderMiddleware(object):
             self.proxy = kwargs["proxy"]
             self.url = kwargs["url"]
             self.clientHello = kwargs["clientHello"]
-
-         #   channel = Channel(port = self.http2_server_port)
-         #   server_stub = HttpClientStub(channel)
+            self.httpClientID = kwargs["httpClientID"]
 
             channel = aio.insecure_channel('http:'+self.http_host_port)
             await channel.channel_ready()
             stub = http_pb2_grpc.HttpClientStub(channel)
             reply = await stub.GetURL(
                 http_pb2.Request(
-            
-      #  reply: Response = await server_stub.GetURL(Request(
                     url=self.url,
                     proxy=self.proxy,
                     headers=self.headers,
                     method=self.method,
                     body=self.body,
-                    clientHello=self.clientHello))
+                    clientHello=self.clientHello,
+                    httpClientID=self.httpClientID))
 
             await channel.close()
             if reply.error == "":
@@ -145,6 +142,13 @@ class ScrapyanonDownloaderMiddleware(object):
         # process the request
         try:
             http_fetcher_args['clientHello'] = request.meta['client_hello']
+        except KeyError:
+            return None
+
+        # httpClientID is used to identify which cached roundTripper to (re)use
+        # in http-fetcher
+        try:
+            http_fetcher_args['httpClientID'] = request.meta['http_client_id']
         except KeyError:
             return None
 

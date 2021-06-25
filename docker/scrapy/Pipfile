@@ -17,6 +17,8 @@ psycopg2-binary = "*"
 alembic = "*"
 pymemcache = "*"
 brotli = "*"
+dryscrape = "*"
+dependency-injector = "*"
 
 [requires]
 python_version = "3.8"

@@ -1,4 +1,4 @@
-FROM golang:1.15.2-alpine
+FROM golang:1.23rc2-alpine3.20
 
 RUN apk update && apk add --no-cache --wait 10 protoc git
 RUN go get github.com/golang/protobuf/protoc-gen-go

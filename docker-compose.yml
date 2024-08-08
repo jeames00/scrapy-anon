@@ -29,7 +29,7 @@ services:
     build:
       context: .
       dockerfile: docker/http/Dockerfile
-    command: http-fetcher
+    command: /scrapy-anon/http-fetcher/http-fetcher
     env_file:
       - .env
     environment:

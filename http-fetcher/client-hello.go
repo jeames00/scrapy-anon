@@ -120,7 +120,7 @@ func buildClientHelloSpec(tlsea *TLSExtensionAttributes) (*utls.ClientHelloSpec,
 					a = append(a, utls.CertCompressionAlgo(x))
 				}
 
-				chs.Extensions[i] = &utls.FakeCertCompressionAlgsExtension{a}
+				chs.Extensions[i] = &utls.UtlsCompressCertExtension{a}
 
 			case 28:
 				chs.Extensions[i] = &utls.FakeRecordSizeLimitExtension{
